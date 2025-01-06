@@ -332,21 +332,24 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
     }
     else
     {
-        printf("Choose a playlist:\n");
-        for (int i = 0; i < szArr; i++)
+        while (menu != szArr + 1)
         {
-            printf("\t%d. %s\n", i + 1, ArrPlaylist[i].name);
+            printf("Choose a playlist:\n");
+            for (int i = 0; i < szArr; i++)
+            {
+                printf("\t%d. %s\n", i + 1, ArrPlaylist[i].name);
+            }
+            printf("\t%d. Back to main menu\n", szArr + 1);
+
+            scanf(" %d", &menu);
+
+            if (menu == szArr + 1)
+                return;
+            if (menu <= szArr && menu >= 1)
+                InPlaylist(&ArrPlaylist[menu - 1]);
+            else
+                printf("Invalid Option\n");
         }
-        printf("\t%d. Back to main menu\n", szArr + 1);
-
-        scanf(" %d", &menu);
-
-        if (menu == szArr + 1)
-            return;
-        if (menu <= szArr && menu >= 1)
-            InPlaylist(&ArrPlaylist[menu - 1]);
-        else
-            printf("Invalid Option\n");
     }
 
 
