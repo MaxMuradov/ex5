@@ -63,7 +63,7 @@ void deleteSong(Playlist* chosenPlaylist) {
     int index = 0;
     printPlaylist(chosenPlaylist);
     printf("Choose a song to delete, or 0 to quit:\n");
-    scanf_s(" %d", &index);
+    scanf(" %d", &index);
 
     if (index == 0 || index > chosenPlaylist->songsNum) {
         printf("Invalid option\n");
@@ -96,7 +96,7 @@ Playlist* deletePlaylist(Playlist* playlists, int* size) {
         printf("\t%d. %s\n", i + 1, playlists[i].name);
     }
     printf("\t%d. Back to main menu\n", *size + 1);
-    scanf_s(" %d", &index);
+    scanf(" %d", &index);
 
     if (index == *size + 1) {
         return playlists; // Return without modifying
@@ -146,13 +146,13 @@ char* scanstr(int b00l)
 {
     if (b00l == 1)
     {
-        scanf_s("%*c");
+        scanf("%*c");
     }
     int memsize = 16;
     char* tmp = (char*)calloc(memsize, sizeof(char));
     int i = 0;
     do {
-        scanf_s("%c", &tmp[i]);
+        scanf("%c", &tmp[i]);
         if (i == memsize - 1 && tmp[i] != '\n')
         {
             memsize *= 2;
@@ -187,7 +187,7 @@ struct Song* AddSong()
     ptr->artist = scanstr(0);
 
     printf("Year of release:\n");
-    scanf_s(" %d", &ptr->year);
+    scanf(" %d", &ptr->year);
 
     printf("Lyrics:\n");
     ptr->lyrics = scanstr(1);
@@ -207,7 +207,7 @@ void ShowPlaylist(struct Playlist* ChosenPlaylist)
     while (menu != 0)
     {
         printf("choose a song to play, or 0 to quit:\n");
-        scanf_s(" %d", &menu);
+        scanf(" %d", &menu);
         if (menu == 0)
             return;
         if (menu - 1 < ChosenPlaylist->songsNum)
@@ -264,7 +264,7 @@ void sortPlaylist(struct Playlist *chPlaylist) {
     printf("1.  sort by year\n2.  sort by streams - ascending order\n");
     printf("3.  sort by streams - descending order\n4.  sort alphabeticaly\n");
 
-    scanf_s(" %d", &menu);
+    scanf(" %d", &menu);
     if (menu == 1)
         sort_by_year(chPlaylist);
     if (menu == 2)
@@ -286,7 +286,7 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
     while (menu != 6)
     {
         printf("\t1. Show Playlist\n\t2. Add Song\n\t3. Delete Song\n\t4. Sort\n\t5. Play\n\t6. Back\n");
-        scanf_s(" %d", &menu);
+        scanf(" %d", &menu);
         switch (menu)
         {
         case 1:
@@ -327,7 +327,7 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
             printf("Choose a playlist:\n");
             printf("\t1. Back to main menu\n");
 
-            scanf_s("%d", &menu);
+            scanf("%d", &menu);
             if (menu != 1)
                 printf("Invalid Option\n");
         }
@@ -342,7 +342,7 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
         }
         printf("\t%d. Back to main menu\n", szArr + 1);
 
-        scanf_s(" %d", &menu);
+        scanf(" %d", &menu);
 
         if (menu == szArr + 1)
             return;
@@ -363,7 +363,7 @@ int main() {
     while (menu != 4)
     {
         printPlaylistsMenu();
-        scanf_s(" %d", &menu);
+        scanf(" %d", &menu);
         switch (menu) {
         case 1:
             WatchPlayList(Array_of_playlist, sizeofArr);
