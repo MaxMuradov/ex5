@@ -87,9 +87,6 @@ void deleteSong(Playlist* chosenPlaylist) {
 
 Playlist* deletePlaylist(Playlist* playlists, int* size) {
 
-    if (playlists == NULL)
-        return playlists;
-    
     int index = 0;
         printf("Choose a playlist to delete:\n");
         for (int i = 0; i < *size; i++) {
