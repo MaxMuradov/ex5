@@ -89,23 +89,23 @@ Playlist* deletePlaylist(Playlist* playlists, int* size) {
 
     if (playlists == NULL)
         return playlists;
-
+    
     int index = 0;
-    printf("Choose a playlist to delete:\n");
-    for (int i = 0; i < *size; i++) {
-        printf("\t%d. %s\n", i + 1, playlists[i].name);
-    }
-    printf("\t%d. Back to main menu\n", *size + 1);
-    scanf(" %d", &index);
+        printf("Choose a playlist to delete:\n");
+        for (int i = 0; i < *size; i++) {
+            printf("\t%d. %s\n", i + 1, playlists[i].name);
+        }
+        printf("\t%d. Back to main menu\n", *size + 1);
+        scanf(" %d", &index);
 
-    if (index == *size + 1) {
-        return playlists; // Return without modifying
-    }
+        if (index == *size + 1) {
+            return playlists; // Return without modifying
+        }
 
-    if (index <= 0 || index > *size) {
-        printf("Invalid option\n");
-        return playlists;
-    }
+        if (index <= 0 || index > *size) {
+            printf("Invalid option\n");
+            return playlists;
+        }
 
     // Free the selected playlist
     freePlaylist(&playlists[index - 1]);
@@ -294,7 +294,7 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
             break;
 
         case 2:
-            ChosenPlaylist->songs = (Song**)realloc(ChosenPlaylist->songs, ++ChosenPlaylist->songsNum * (sizeof(Song*)));
+            ChosenPlaylist->songs = (Song**)realloc(ChosenPlaylist->songs, (++ChosenPlaylist->songsNum) * (sizeof(Song*)));
             ChosenPlaylist->songs[ChosenPlaylist->songsNum - 1] = AddSong();
             break;
 
@@ -355,6 +355,17 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
 
 }
 
+void Total_exit(Playlist* Array_of_playlist, int* sizeofArr)
+{
+    for (int i = *sizeofArr - 1; i > 0; i--)
+    {
+        freePlaylist(&Array_of_playlist[i]);
+    }
+    free(Array_of_playlist);
+    Array_of_playlist = NULL;
+    *sizeofArr = 0;
+}
+
 int main() {
     int menu = 0;
     struct Playlist* Array_of_playlist = NULL;
@@ -381,6 +392,8 @@ int main() {
         case 3:
             Array_of_playlist = deletePlaylist(Array_of_playlist, &sizeofArr);
             break;
+        case 4:
+            Total_exit(Array_of_playlist, &sizeofArr);
         }
     }
     printf("Goodbye!\n");
