@@ -62,7 +62,7 @@ void printPlaylist(Playlist* ChosenPlaylist)
 void deleteSong(Playlist* chosenPlaylist) {
     int index = 0;
     printPlaylist(chosenPlaylist);
-    printf("Choose a song to delete, or 0 to quit:\n");
+    printf("choose a song to delete, or 0 to quit:\n");
     scanf(" %d", &index);
 
     if (index == 0 || index > chosenPlaylist->songsNum) {
@@ -88,7 +88,7 @@ void deleteSong(Playlist* chosenPlaylist) {
 Playlist* deletePlaylist(Playlist* playlists, int* size) {
 
     int index = 0;
-        printf("Choose a playlist to delete:\n");
+        printf("Choose a playlist:\n");
         for (int i = 0; i < *size; i++) {
             printf("\t%d. %s\n", i + 1, playlists[i].name);
         }
