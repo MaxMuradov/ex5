@@ -19,6 +19,12 @@ typedef struct Playlist {
 } Playlist;
 
 //some recommendations for functions, you may implement however you want
+void swapsong(Song** firstsong, Song** secondsong)
+{
+    Song* temp = *firstsong;
+    *firstsong = *secondsong;
+    *secondsong = temp;
+}
 
 void freeSong(Song* ptr) {
     if (ptr != NULL)
@@ -70,17 +76,17 @@ void deleteSong(Playlist* chosenPlaylist) {
         return;
     }
 
-    // Free the memory of the selected song
-    freeSong(chosenPlaylist->songs[index - 1]);
-
-    // Shift the remaining songs
+    // Shift the songs
     for (int i = index - 1; i < chosenPlaylist->songsNum - 1; i++) {
-        chosenPlaylist->songs[i] = chosenPlaylist->songs[i + 1];
+        swapsong(&chosenPlaylist->songs[i], &chosenPlaylist->songs[i + 1]);
     }
+
+    Song* ptr = chosenPlaylist->songs[chosenPlaylist->songsNum - 1];
 
     // Decrease the number of songs and resize the array
     chosenPlaylist->songsNum--;
     chosenPlaylist->songs = (Song**)realloc(chosenPlaylist->songs, chosenPlaylist->songsNum * sizeof(Song*));
+    freeSong(ptr);
 
     printf("Song deleted successfully.\n");
 }
@@ -217,13 +223,6 @@ void ShowPlaylist(struct Playlist* ChosenPlaylist)
 void printPlaylistsMenu() {
     printf("Please Choose:\n");
     printf("\t1. Watch playlists\n\t2. Add playlist\n\t3. Remove playlist\n\t4. exit\n");
-}
-
-void swapsong(Song** firstsong, Song** secondsong)
-{
-    Song* temp = *firstsong;
-    *firstsong = *secondsong;
-    *secondsong = temp;
 }
 
 void sort_by_year(struct Playlist* chPlaylist)
