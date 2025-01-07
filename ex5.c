@@ -21,6 +21,7 @@ typedef struct Playlist {
 //some recommendations for functions, you may implement however you want
 void swapsong(Song** firstsong, Song** secondsong)
 {
+    //swaping songs
     Song* temp = *firstsong;
     *firstsong = *secondsong;
     *secondsong = temp;
@@ -29,6 +30,7 @@ void swapsong(Song** firstsong, Song** secondsong)
 void freeSong(Song* ptr) {
     if (ptr != NULL)
     {
+        //if ptr not NULL free all data
         free(ptr->title);
         ptr->title = NULL;
         free(ptr->artist);
@@ -42,6 +44,7 @@ void freeSong(Song* ptr) {
 void freePlaylist(struct Playlist* ptr) {
     if (ptr != NULL)
     {
+        //if ptr not NULL free all data
         free(ptr->name);
         ptr->name = NULL;
         for (int i = ptr->songsNum - 1; i >= 0; i--)
@@ -53,6 +56,7 @@ void freePlaylist(struct Playlist* ptr) {
 
 void printPlaylist(Playlist* ChosenPlaylist)
 {
+    //just print
     if (ChosenPlaylist->songs != NULL)
     {
         for (int i = 0; i < ChosenPlaylist->songsNum; i++, printf("\n"))
@@ -81,12 +85,12 @@ void deleteSong(Playlist* chosenPlaylist) {
     for (int i = index - 1; i < chosenPlaylist->songsNum - 1; i++) {
         swapsong(&chosenPlaylist->songs[i], &chosenPlaylist->songs[i + 1]);
     }
-
+    
     Song* ptr = chosenPlaylist->songs[chosenPlaylist->songsNum - 1];
-
-    // Decrease the number of songs and resize the array
-    chosenPlaylist->songsNum--;
     freeSong(ptr);
+    //just to be sure im doing it thru ptr
+    chosenPlaylist->songsNum--;
+    
 
     printf("Song deleted successfully.\n");
 }
@@ -118,8 +122,9 @@ Playlist** deletePlaylist(Playlist** playlists, int* size) {
         playlists[i] = playlists[i + 1];
     }
 
-    // Resize the array
+    
     (*size)--;
+    //realloc isnt neccesary ik but it was good for check leaks
     if (*size > 0) {
         playlists = (Playlist**)realloc(playlists, (*size) * sizeof(Playlist*));
     }
@@ -132,6 +137,7 @@ Playlist** deletePlaylist(Playlist** playlists, int* size) {
 }
 
 void playSong(Song* chosenSong) {
+    //u know play song...
     printf("Now playing %s:\n", chosenSong->title);
     printf("$ %s $\n", chosenSong->lyrics);
     chosenSong->streams++;
@@ -139,16 +145,16 @@ void playSong(Song* chosenSong) {
 
 void PlayPlaylist(Playlist* chosenPlaylist)
 {
+    //for of playing songs
     for (int i = 0; i < chosenPlaylist->songsNum; i++, printf("\n"))
-    {
         playSong(chosenPlaylist->songs[i]);
-    }
 }
 
 char* scanstr(int b00l)
 {
     if (b00l == 1)
     {
+        //if i need to clear buffer
         scanf("%*[^\n]");
         scanf("%*c");
     }
@@ -168,12 +174,14 @@ char* scanstr(int b00l)
         }
     } while (tmp[i++] != '\n');
     tmp[i - 1] = '\0';
-
+    //realloc memory if str exceed memory that was
+    
     return tmp;
 }
 
 struct Playlist* createPlayList()
 {
+    //only creating playlist
     Playlist* ptr = (Playlist*)malloc(sizeof(Playlist));
     printf("Enter playlist's name:\n");
     ptr->name = scanstr(1);
@@ -185,6 +193,7 @@ struct Playlist* createPlayList()
 
 struct Song* AddSong()
 {
+    //creating song
     Song* ptr = (Song*)malloc(sizeof(Song));
     printf("Enter song's details\n");
 
@@ -207,9 +216,8 @@ struct Song* AddSong()
 
 void ShowPlaylist(struct Playlist* ChosenPlaylist)
 {
+    //showplaylist menu
     int menu = -1;
-
-
     printPlaylist(ChosenPlaylist);
 
     while (menu != 0)
@@ -230,6 +238,7 @@ void printPlaylistsMenu() {
     printf("\t1. Watch playlists\n\t2. Add playlist\n\t3. Remove playlist\n\t4. exit\n");
 }
 
+//Bublesorts to sort songs in chosen order 
 void sort_by_year(struct Playlist* chPlaylist)
 {
     for (int i = 0; i < chPlaylist->songsNum - 1; i++)
@@ -260,7 +269,7 @@ void sort_by_streams(struct Playlist* chPlaylist, char ch)
 
 void sortPlaylist(struct Playlist *chPlaylist) {
     int menu = -1;
-
+    //sort menu
     printf("\nchoose:\n");
     printf("1.  sort by year\n2.  sort by streams - ascending order\n");
     printf("3.  sort by streams - descending order\n4.  sort alphabetically\n");
@@ -275,13 +284,12 @@ void sortPlaylist(struct Playlist *chPlaylist) {
     else if (menu < 1 || menu > 3)
         sort_by_alphabet(chPlaylist);
 
-
-
     printf("sorted\n");
 }
 
 void InPlaylist(struct Playlist *ChosenPlaylist)
 {
+    //playlist menu
     int menu = -1;
     printf("playlist %s:\n", ChosenPlaylist->name);
     while (menu != 6)
@@ -295,6 +303,7 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
                 break;
 
             case 2:
+                //realloc memory +1 song if added
                 ChosenPlaylist->songs = (Song**)realloc(ChosenPlaylist->songs, (++ChosenPlaylist->songsNum) * (sizeof(Song*)));
                 ChosenPlaylist->songs[ChosenPlaylist->songsNum - 1] = AddSong();
                 break;
@@ -326,9 +335,8 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
 
 void WatchPlayList(struct Playlist** ArrPlaylist, int szArr)
 {
+    //Also menu
     int menu = 0;
-
-
     if (ArrPlaylist == NULL)
     {
         while (menu != 1)
@@ -369,6 +377,7 @@ void WatchPlayList(struct Playlist** ArrPlaylist, int szArr)
 
 void Total_exit(Playlist** Array_of_playlist, int* sizeofArr)
 {
+    //free all playlists that in array
     if (Array_of_playlist != NULL)
     {
         for (int i = *sizeofArr - 1; i >= 0; i--)
@@ -395,6 +404,7 @@ int main() {
             break;
 
         case 2:
+            //++size and realloc +1 ptr of Array and push to array of ptr
             sizeofArr++;
             if (Array_of_playlist != NULL)
                 Array_of_playlist = (Playlist**)realloc(Array_of_playlist, sizeofArr * (sizeof(Playlist*)));
@@ -407,6 +417,7 @@ int main() {
             Array_of_playlist = deletePlaylist(Array_of_playlist, &sizeofArr);
             break;
         case 4:
+            //free all + free ptr of Arrays_Playlist himself
             Total_exit(Array_of_playlist, &sizeofArr);
             free(Array_of_playlist);
             Array_of_playlist = NULL;
@@ -417,3 +428,4 @@ int main() {
     }
     printf("Goodbye!\n");
 }
+//see you next time)
