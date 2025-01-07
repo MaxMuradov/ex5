@@ -91,12 +91,12 @@ void deleteSong(Playlist* chosenPlaylist) {
     printf("Song deleted successfully.\n");
 }
 
-Playlist* deletePlaylist(Playlist* playlists, int* size) {
+Playlist** deletePlaylist(Playlist** playlists, int* size) {
 
     int index = 0;
         printf("Choose a playlist:\n");
         for (int i = 0; i < *size; i++) {
-            printf("\t%d. %s\n", i + 1, playlists[i].name);
+            printf("\t%d. %s\n", i + 1, playlists[i]->name);
         }
         printf("\t%d. Back to main menu\n", *size + 1);
         scanf(" %d", &index);
@@ -111,7 +111,7 @@ Playlist* deletePlaylist(Playlist* playlists, int* size) {
         }
 
     // Free the selected playlist
-    freePlaylist(&playlists[index - 1]);
+    freePlaylist(playlists[index - 1]);
 
     // Shift the remaining playlists
     for (int i = index - 1; i < *size - 1; i++) {
@@ -121,7 +121,7 @@ Playlist* deletePlaylist(Playlist* playlists, int* size) {
     // Resize the array
     (*size)--;
     if (*size > 0) {
-        playlists = (Playlist*)realloc(playlists, (*size) * sizeof(Playlist));
+        playlists = (Playlist**)realloc(playlists, (*size) * sizeof(Playlist*));
     }
     else {
         playlists = NULL;
@@ -149,13 +149,18 @@ char* scanstr(int b00l)
 {
     if (b00l == 1)
     {
+        scanf("%*[^\n]");
         scanf("%*c");
     }
     int memsize = 16;
-    char* tmp = (char*)calloc(memsize, sizeof(char));
+    char* tmp = (char*)calloc(memsize, sizeof(char)), ch;
     int i = 0;
     do {
-        scanf("%c", &tmp[i]);
+        scanf("%c", &ch);
+        if(ch == '\r'){
+            continue;
+        }
+        tmp[i] = ch;
         if (i == memsize - 1 && tmp[i] != '\n')
         {
             memsize *= 2;
@@ -167,13 +172,13 @@ char* scanstr(int b00l)
     return tmp;
 }
 
-struct Playlist createPlayList()
+struct Playlist* createPlayList()
 {
-    Playlist ptr;
+    Playlist* ptr = (Playlist*)malloc(sizeof(Playlist));
     printf("Enter playlist's name:\n");
-    ptr.name = scanstr(1);
-    ptr.songs = NULL;
-    ptr.songsNum = 0;
+    ptr->name = scanstr(1);
+    ptr->songs = NULL;
+    ptr->songsNum = 0;
 
     return ptr;
 }
@@ -282,36 +287,44 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
     while (menu != 6)
     {
         printf("\t1. Show Playlist\n\t2. Add Song\n\t3. Delete Song\n\t4. Sort\n\t5. Play\n\t6. Back\n");
-        scanf(" %d", &menu);
-        switch (menu)
-        {
-        case 1:
-            ShowPlaylist(ChosenPlaylist);
-            break;
+        if(scanf(" %d", &menu)){
+            switch (menu)
+            {
+            case 1:
+                ShowPlaylist(ChosenPlaylist);
+                break;
 
-        case 2:
-            ChosenPlaylist->songs = (Song**)realloc(ChosenPlaylist->songs, (++ChosenPlaylist->songsNum) * (sizeof(Song*)));
-            ChosenPlaylist->songs[ChosenPlaylist->songsNum - 1] = AddSong();
-            break;
+            case 2:
+                ChosenPlaylist->songs = (Song**)realloc(ChosenPlaylist->songs, (++ChosenPlaylist->songsNum) * (sizeof(Song*)));
+                ChosenPlaylist->songs[ChosenPlaylist->songsNum - 1] = AddSong();
+                break;
 
-        case 3:
-            deleteSong(ChosenPlaylist);
-            break;
+            case 3:
+                deleteSong(ChosenPlaylist);
+                break;
 
-        case 4:
-            sortPlaylist(ChosenPlaylist);
-            break;
+            case 4:
+                sortPlaylist(ChosenPlaylist);
+                break;
 
-        case 5:
-            PlayPlaylist(ChosenPlaylist);
-            break;
+            case 5:
+                PlayPlaylist(ChosenPlaylist);
+                break;
+            case 6:
+                break;
+            default:
+                printf("Invalid Option\n");
 
+            }
+        } else {
+            //delete in case of failed scanf.
+            scanf("%*[\n]%*c");
         }
     }
 
 }
 
-void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
+void WatchPlayList(struct Playlist** ArrPlaylist, int szArr)
 {
     int menu = 0;
 
@@ -336,7 +349,7 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
             printf("Choose a playlist:\n");
             for (int i = 0; i < szArr; i++)
             {
-                printf("\t%d. %s\n", i + 1, ArrPlaylist[i].name);
+                printf("\t%d. %s\n", i + 1, ArrPlaylist[i]->name);
             }
             printf("\t%d. Back to main menu\n", szArr + 1);
 
@@ -345,7 +358,7 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
             if (menu == szArr + 1)
                 return;
             if (menu <= szArr && menu >= 1)
-                InPlaylist(&ArrPlaylist[menu - 1]);
+                InPlaylist(ArrPlaylist[menu - 1]);
             else
                 printf("Invalid Option\n");
         }
@@ -368,7 +381,7 @@ void Total_exit(Playlist** Array_of_playlist, int* sizeofArr)
 
 int main() {
     int menu = 0;
-    struct Playlist* Array_of_playlist = NULL;
+    struct Playlist** Array_of_playlist = NULL;
     int sizeofArr = 0;
 
     while (menu != 4)
@@ -383,9 +396,9 @@ int main() {
         case 2:
             sizeofArr++;
             if (Array_of_playlist != NULL)
-                Array_of_playlist = (Playlist*)realloc(Array_of_playlist, sizeofArr * (sizeof(Playlist)));
+                Array_of_playlist = (Playlist**)realloc(Array_of_playlist, sizeofArr * (sizeof(Playlist*)));
             else
-                Array_of_playlist = (Playlist*)malloc(sizeofArr * (sizeof(Playlist)));
+                Array_of_playlist = (Playlist**)malloc(sizeofArr * (sizeof(Playlist*)));
             Array_of_playlist[sizeofArr - 1] = createPlayList();
             break;
 
@@ -393,9 +406,12 @@ int main() {
             Array_of_playlist = deletePlaylist(Array_of_playlist, &sizeofArr);
             break;
         case 4:
-            Total_exit(&Array_of_playlist, &sizeofArr);
-            //free(Array_of_playlist);
+            Total_exit(Array_of_playlist, &sizeofArr);
+            free(Array_of_playlist);
             Array_of_playlist = NULL;
+            break;
+        default:
+            printf("Invalid Option\n");
         }
     }
     printf("Goodbye!\n");
