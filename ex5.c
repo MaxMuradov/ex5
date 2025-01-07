@@ -46,6 +46,7 @@ void freePlaylist(struct Playlist* ptr) {
         ptr->name = NULL;
         for (int i = ptr->songsNum - 1; i >= 0; i--)
             freeSong(ptr->songs[i]);
+        free(ptr->songs);
         free(ptr);
     }
 }
@@ -85,7 +86,6 @@ void deleteSong(Playlist* chosenPlaylist) {
 
     // Decrease the number of songs and resize the array
     chosenPlaylist->songsNum--;
-    chosenPlaylist->songs = (Song**)realloc(chosenPlaylist->songs, chosenPlaylist->songsNum * sizeof(Song*));
     freeSong(ptr);
 
     printf("Song deleted successfully.\n");
@@ -167,13 +167,13 @@ char* scanstr(int b00l)
     return tmp;
 }
 
-struct Playlist* createPlayList()
+struct Playlist createPlayList()
 {
-    Playlist* ptr = (Playlist*)malloc(sizeof(Playlist));
+    Playlist ptr;
     printf("Enter playlist's name:\n");
-    ptr->name = scanstr(1);
-    ptr->songs = NULL;
-    ptr->songsNum = 0;
+    ptr.name = scanstr(1);
+    ptr.songs = NULL;
+    ptr.songsNum = 0;
 
     return ptr;
 }
@@ -354,14 +354,15 @@ void WatchPlayList(struct Playlist* ArrPlaylist, int szArr)
 
 }
 
-void Total_exit(Playlist* Array_of_playlist, int* sizeofArr)
+void Total_exit(Playlist** Array_of_playlist, int* sizeofArr)
 {
     for (int i = *sizeofArr - 1; i > 0; i--)
     {
-        freePlaylist(&Array_of_playlist[i]);
+        freePlaylist(Array_of_playlist[i]);
     }
-    free(Array_of_playlist);
-    Array_of_playlist = NULL;
+    freePlaylist(Array_of_playlist[0]);
+
+    //Array[0]
     *sizeofArr = 0;
 }
 
@@ -385,14 +386,16 @@ int main() {
                 Array_of_playlist = (Playlist*)realloc(Array_of_playlist, sizeofArr * (sizeof(Playlist)));
             else
                 Array_of_playlist = (Playlist*)malloc(sizeofArr * (sizeof(Playlist)));
-            Array_of_playlist[sizeofArr - 1] = *createPlayList();
+            Array_of_playlist[sizeofArr - 1] = createPlayList();
             break;
 
         case 3:
             Array_of_playlist = deletePlaylist(Array_of_playlist, &sizeofArr);
             break;
         case 4:
-            Total_exit(Array_of_playlist, &sizeofArr);
+            Total_exit(&Array_of_playlist, &sizeofArr);
+            //free(Array_of_playlist);
+            Array_of_playlist = NULL;
         }
     }
     printf("Goodbye!\n");
