@@ -127,7 +127,7 @@ Playlist** deletePlaylist(Playlist** playlists, int* size) {
         playlists = NULL;
     }
 
-    printf("Playlist deleted successfully.\n");
+    printf("Playlist deleted.\n");
     return playlists;
 }
 
@@ -263,7 +263,7 @@ void sortPlaylist(struct Playlist *chPlaylist) {
 
     printf("\nchoose:\n");
     printf("1.  sort by year\n2.  sort by streams - ascending order\n");
-    printf("3.  sort by streams - descending order\n4.  sort alphabeticaly\n");
+    printf("3.  sort by streams - descending order\n4.  sort alphabetically\n");
 
     scanf(" %d", &menu);
     if (menu == 1)
@@ -286,7 +286,7 @@ void InPlaylist(struct Playlist *ChosenPlaylist)
     printf("playlist %s:\n", ChosenPlaylist->name);
     while (menu != 6)
     {
-        printf("\t1. Show Playlist\n\t2. Add Song\n\t3. Delete Song\n\t4. Sort\n\t5. Play\n\t6. Back\n");
+        printf("\t1. Show Playlist\n\t2. Add Song\n\t3. Delete Song\n\t4. Sort\n\t5. Play\n\t6. exit\n");
         if(scanf(" %d", &menu)){
             switch (menu)
             {
@@ -369,12 +369,13 @@ void WatchPlayList(struct Playlist** ArrPlaylist, int szArr)
 
 void Total_exit(Playlist** Array_of_playlist, int* sizeofArr)
 {
-    for (int i = *sizeofArr - 1; i > 0; i--)
+    if (Array_of_playlist != NULL)
     {
-        freePlaylist(Array_of_playlist[i]);
+        for (int i = *sizeofArr - 1; i >= 0; i--)
+        {
+            freePlaylist(Array_of_playlist[i]);
+        }
     }
-    freePlaylist(Array_of_playlist[0]);
-
     //Array[0]
     *sizeofArr = 0;
 }
