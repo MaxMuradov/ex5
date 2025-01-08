@@ -1,6 +1,8 @@
-
-
-
+/******************
+Name: Maxim Muradov
+ID: 346975386
+Assignment: ex4
+*******************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
